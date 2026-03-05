@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSRJ Synergy 每日 AI 资讯</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --accent-cyan: #00f5ff;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --spring-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-primary);
+        }
+
+        /* 动态背景 */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-purple);
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent-pink);
+            bottom: 10%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        /* 鼠标跟随光效 */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 头部玻璃卡片 */
+        .header-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideIn 0.8s var(--spring-easing) forwards;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(0, 245, 255, 0.3);
+        }
+
+        .brand-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .date-badge {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 分类标签 */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s var(--spring-easing) 0.2s forwards;
+        }
+
+        .category-tab {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.4s var(--spring-easing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-tab:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 245, 255, 0.5);
+            color: var(--text-primary);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(168, 85, 247, 0.2));
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .category-tab .glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 245, 255, 0.3), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .category-tab:hover .glow {
+            opacity: 1;
+        }
+
+        /* 新闻卡片网格 */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .news-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideIn 0.8s var(--spring-easing) forwards;
+            transition: all 0.5s var(--spring-easing);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .news-card:nth-child(1) { animation-delay: 0.1s; }
+        .news-card:nth-child(2) { animation-delay: 0.15s; }
+        .news-card:nth-child(3) { animation-delay: 0.2s; }
+        .news-card:nth-child(4) { animation-delay: 0.25s; }
+        .news-card:nth-child(5) { animation-delay: 0.3s; }
+        .news-card:nth-child(6) { animation-delay: 0.35s; }
+        .news-card:nth-child(7) { animation-delay: 0.4s; }
+        .news-card:nth-child(8) { animation-delay: 0.45s; }
+        .news-card:nth-child(9) { animation-delay: 0.5s; }
+        .news-card:nth-child(10) { animation-delay: 0.55s; }
+        .news-card:nth-child(11) { animation-delay: 0.6s; }
+        .news-card:nth-child(12) { animation-delay: 0.65s; }
+        .news-card:nth-child(13) { animation-delay: 0.7s; }
+        .news-card:nth-child(14) { animation-delay: 0.75s; }
+        .news-card:nth-child(15) { animation-delay: 0.8s; }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .news-card:hover::before {
+            opacity: 1;
+        }
+
+        .news-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 245, 255, 0.4);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+
+        .card-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .card-category {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-cyan);
+            padding: 4px 10px;
+            background: rgba(0, 245, 255, 0.1);
+            border-radius: 6px;
+        }
+
+        .card-body {
+            padding: 16px 20px 20px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card-summary {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .card-insight {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+            border-left: 3px solid var(--accent-purple);
+            padding: 12px 16px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 16px;
+        }
+
+        .insight-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-pink);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .insight-label::before {
+            content: '💡';
+        }
+
+        .insight-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .card-source {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .source-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .card-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s var(--spring-easing);
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(0, 245, 255, 0.1);
+        }
+
+        .card-link:hover {
+            background: rgba(0, 245, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .card-link svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s var(--spring-easing);
+        }
+
+        .card-link:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* 卡片展开详情 */
+        .card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s var(--spring-easing), padding 0.5s var(--spring-easing);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .news-card.expanded .card-details {
+            max-height: 300px;
+            padding: 0 20px 20px;
+        }
+
+        .details-content {
+            padding-top: 16px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .details-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+
+        .details-list {
+            list-style: none;
+        }
+
+        .details-list li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .details-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-purple);
+        }
+
+        /* 底部 */
+        .footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s var(--spring-easing) 0.9s forwards;
+        }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header-card {
+                padding: 25px;
+            }
+            
+            .brand-text h1 {
+                font-size: 22px;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                gap: 20px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 鼠标跟随光效 -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- 动态背景 -->
+    <div class="bg-animation">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="bg-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- 头部卡片 -->
+        <header class="header-card">
+            <div class="header-top">
+                <div class="brand">
+                    <div class="logo">RS</div>
+                    <div class="brand-text">
+                        <h1>RSRJ Synergy</h1>
+                        <p>每日 AI 资讯 · Daily AI Intelligence</p>
+                    </div>
+                </div>
+                <div class="date-badge">2026年3月5日 星期三 · 早间版</div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">精选资讯</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">大模型动态</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">7</span>
+                    <span class="stat-label">工具/项目</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">深度洞察</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 分类标签 -->
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all">
+                <span class="glow"></span>
+                全部资讯
+            </button>
+            <button class="category-tab" data-category="model">
+                <span class="glow"></span>
+                大模型迭代
+            </button>
+            <button class="category-tab" data-category="github">
+                <span class="glow"></span>
+                GitHub 项目
+            </button>
+            <button class="category-tab" data-category="vibe">
+                <span class="glow"></span>
+                Vibe Coding
+            </button>
+            <button class="category-tab" data-category="tool">
+                <span class="glow"></span>
+                AI 工具
+            </button>
+            <button class="category-tab" data-category="business">
+                <span class="glow"></span>
+                商业应用
+            </button>
+        </div>
+
+        <!-- 新闻卡片网格 -->
+        <div class="news-grid" id="newsGrid">
+            <article class="news-card" data-category="model">
+                <div class="card-header">
+                    <div class="card-number">01</div>
+                    <span class="card-category">MODEL</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Anthropic ARR 突破 $190 亿，被 DOD 列入黑名单</h3>
+                    <p class="card-summary">Anthropic 年化收入从 2025 年的 $90 亿飙升至 $190 亿，但同时被 DOD 列入黑名单</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">增长速度惊人，但政府关系紧张暴露了 AI 企业在国家安全层面的脆弱性</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Gardenz Home</span>
+                        </div>
+                        <a href="https://gardenzhome.com/anthripic-claude-news-updates-today/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="model">
+                <div class="card-header">
+                    <div class="card-number">02</div>
+                    <span class="card-category">MODEL</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">OpenAI vs Anthropic：企业市场份额大逆转</h3>
+                    <p class="card-summary">Anthropic 企业 LLM 市场份额从 24% 跃升至 40%，OpenAI 从 50% 跌至 27%</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">OpenAI 赢了消费者市场，但 Anthropic 正在赢得更值钱的企业市场</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>SWOTPal</span>
+                        </div>
+                        <a href="https://swotpal.com/blog/openai-vs-anthropic-swot-2026" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="model">
+                <div class="card-header">
+                    <div class="card-number">03</div>
+                    <span class="card-category">MODEL</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">AI 健康聊天机器人：月处理 1230 万次问诊</h3>
+                    <p class="card-summary">AI 分诊错误率从 14.6% 降至 5.2%，78% 用户表示症状理解更清晰</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">"Dr. Google" 时代正在终结，AI 医疗助手正在从玩具变成工具</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>TradingGPT</span>
+                        </div>
+                        <a href="https://www.tradinggpt.pro/market/news/59358" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="model">
+                <div class="card-header">
+                    <div class="card-number">04</div>
+                    <span class="card-category">MODEL</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Anthropic 指控中国 AI 实验室大规模盗用 Claude</h3>
+                    <p class="card-summary">发现超过 24,000 个欺诈账户涉嫌通过"蒸馏"技术反向工程 Claude</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">AI 模型窃取已成为国家级竞争手段</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Mean CEO</span>
+                        </div>
+                        <a href="https://blog.mean.ceo/anthropic-claude-news-march-2026/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="vibe">
+                <div class="card-header">
+                    <div class="card-number">05</div>
+                    <span class="card-category">VIBE</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Claude Code 成为 2026 年最受欢迎的 AI 编程工具</h3>
+                    <p class="card-summary">发布仅 8 个月就超越 GitHub Copilot 和 Cursor，成为开发者使用率最高的工具</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">46% 的开发者表示喜爱 Claude Code，远超 Cursor 的 19%</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Pragmatic Engineer</span>
+                        </div>
+                        <a href="https://newsletter.pragmaticengineer.com/p/ai-tooling-2026" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="vibe">
+                <div class="card-header">
+                    <div class="card-number">06</div>
+                    <span class="card-category">VIBE</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Cursor vs Claude Code：2026 终极对比</h3>
+                    <p class="card-summary">Claude Code 是 agent-first，Cursor 是 IDE-first。两者都在向对方领域渗透</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">Claude Code 擅长复杂推理任务，Cursor 擅长日常编辑</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Builder.io</span>
+                        </div>
+                        <a href="https://www.builder.io/blog/cursor-vs-claude-code" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="vibe">
+                <div class="card-header">
+                    <div class="card-number">07</div>
+                    <span class="card-category">VIBE</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Vibe Coding 工具生态 2026 全景</h3>
+                    <p class="card-summary">Cursor 适合专业开发者，Bolt.new/Lovable 适合快速原型，Windsurf 性价比最高</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">最好的团队使用 2-3 个工具组合</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Manus</span>
+                        </div>
+                        <a href="https://manus.im/blog/best-vibe-coding-tools" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="vibe">
+                <div class="card-header">
+                    <div class="card-number">08</div>
+                    <span class="card-category">VIBE</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">GitHub 上必知的 4 个 Vibe Coding 仓库</h3>
+                    <p class="card-summary">vibe-coding-playbook、context-engineering-intro、awesome-vibe-coding、vibe-coding-prompt-template</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">工具不是问题，提示工程才是</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Medium</span>
+                        </div>
+                        <a href="https://medium.com/write-a-catalyst/4-github-repos-every-vibe-coder-should-know" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="github">
+                <div class="card-header">
+                    <div class="card-number">09</div>
+                    <span class="card-category">GITHUB</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">OpenClaw：史上增长最快的开源 AI 助手</h3>
+                    <p class="card-summary">支持 WhatsApp、Telegram、Slack、Discord、Signal、iMessage 等多渠道</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">ClawHub 技能注册表已有 5700+ 社区构建的技能</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Build MVP Fast</span>
+                        </div>
+                        <a href="https://www.buildmvpfast.com/blog/best-open-source-ai-projects-github-2026" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="github">
+                <div class="card-header">
+                    <div class="card-number">10</div>
+                    <span class="card-category">GITHUB</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">GitHub 2026：3600 万新开发者加入</h3>
+                    <p class="card-summary">印度贡献 520 万，巴西、印尼、日本、德国也有显著增长</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">约 60% 的顶级增长项目与 AI 相关</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>InfoQ</span>
+                        </div>
+                        <a href="https://www.infoq.com/news/2026/03/github-ai-2026/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="github">
+                <div class="card-header">
+                    <div class="card-number">11</div>
+                    <span class="card-category">GITHUB</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">2026 年 GitHub 上 18 个最重要的 AI 项目</h3>
+                    <p class="card-summary">SecondMe（数字身份）、Prompt Optimizer、Krillin AI（视频翻译）等</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">AI 正从工具演变为真正的合作伙伴</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>AI Haberleri</span>
+                        </div>
+                        <a href="https://aihaberleri.org/en/news/the-18-most-important-ai-projects-of-2026-on-github-have-been-published" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="business">
+                <div class="card-header">
+                    <div class="card-number">12</div>
+                    <span class="card-category">BUSINESS</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">AI 初创公司融资 2026：超 1000 万美元融资已达 17 起</h3>
+                    <p class="card-summary">仅 2026 年前两个月，就有近 20 家美国 AI 初创公司完成超 1 亿美元融资</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">xAI 完成 $200 亿融资后被 SpaceX 以 $2500 亿估值收购</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>TechCrunch</span>
+                        </div>
+                        <a href="https://techcrunch.com/2026/02/17/here-are-the-17-us-based-ai-companies-that-have-raised-100m-or-more-in-2026/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="business">
+                <div class="card-header">
+                    <div class="card-number">13</div>
+                    <span class="card-category">BUSINESS</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">OpenAI 预计 2026 年收入达 $200 亿</h3>
+                    <p class="card-summary">从去年的 $37 亿增长 5 倍，正在筹备可能价值 $1 万亿的 IPO</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">OpenAI 已承诺超 $1.4 万亿用于与 Oracle、Microsoft、Amazon、CoreWeave 的基础设施交易</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Foundation Capital</span>
+                        </div>
+                        <a href="https://foundationcapital.com/where-ai-is-headed-in-2026/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="business">
+                <div class="card-header">
+                    <div class="card-number">14</div>
+                    <span class="card-category">BUSINESS</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">企业 AI 终于在 2026 年进入生产环境</h3>
+                    <p class="card-summary">阻碍不是模型能力，而是 AI 无法看到企业内部工作的实际情况</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">小型定制化模型在企业内部将优于前沿模型</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>Foundation Capital</span>
+                        </div>
+                        <a href="https://foundationcapital.com/where-ai-is-headed-in-2026/" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card" data-category="business">
+                <div class="card-header">
+                    <div class="card-number">15</div>
+                    <span class="card-category">BUSINESS</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">2026 年值得关注的 10 家 AI 初创公司</h3>
+                    <p class="card-summary">Anthropic、Perplexity、WitnessAI、Jeff Bezos 的 Project Prometheus</p>
+                    <div class="card-insight">
+                        <div class="insight-label">Insight</div>
+                        <p class="insight-text">AI 市场 2025 年增长近 50%，达到约 $1.5 万亿</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-source">
+                            <div class="source-icon">📰</div>
+                            <span>CRN</span>
+                        </div>
+                        <a href="https://www.crn.com/news/ai/2026/the-10-ai-startup-companies-to-watch-in-2026" class="card-link" target="_blank">
+                            查看原文
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- 底部 -->
+        <footer class="footer">
+            <div class="footer-logo">RSRJ Synergy</div>
+            <p class="footer-text">每日精选 AI 资讯 · 温哥华时间 07:30 & 17:00 更新</p>
+        </footer>
+    </div>
+
+    <script>
+        // 鼠标跟随光效
+        const cursorGlow = document.getElementById('cursorGlow');
+        let mouseX = 0, mouseY = 0;
+        let glowX = 0, glowY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateGlow() {
+            glowX += (mouseX - glowX) * 0.1;
+            glowY += (mouseY - glowY) * 0.1;
+            cursorGlow.style.left = glowX + 'px';
+            cursorGlow.style.top = glowY + 'px';
+            requestAnimationFrame(animateGlow);
+        }
+        animateGlow();
+
+        // Tab hover 光效
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('mousemove', (e) => {
+                const rect = tab.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                tab.style.setProperty('--mouse-x', x + '%');
+                tab.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+
+        // 卡片点击展开
+        document.querySelectorAll('.news-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.card-link')) return;
+                card.classList.toggle('expanded');
+            });
+        });
+
+        // 分类筛选
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.dataset.category;
+                const cards = document.querySelectorAll('.news-card');
+                
+                cards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 50);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // 鼠标进入卡片增强效果
+        document.querySelectorAll('.news-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                cursorGlow.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                cursorGlow.style.opacity = '0.6';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                cursorGlow.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorGlow.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>
